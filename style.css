@@ -1,0 +1,61 @@
+
+
+body{
+    box-sizing: border-box;
+}
+.table-human{
+    margin-top: 20px;
+    margin-right: 25px;
+    border-collapse:separate;
+    display: inline-block;
+}
+.table-comp{
+    margin-top: 20px;
+    margin-right: 25px;
+    border-collapse:separate;
+    display: inline-block;
+}
+
+td {
+    text-align: center;
+    width: 9%;
+    height: 20px;
+    background: aqua;
+  }
+
+tr, td, th{
+    border:1px solid black;
+    padding: 5px;
+}
+
+.highlight{
+    background: red;
+}
+
+th {
+    width: 9%;
+    height: 20px; 
+    background: aqua;
+}
+
+
+.auto-ship_busy{
+    background-color: rgb(212, 188, 235);
+}
+
+.auto-ship{
+    background-color: rgb(133, 28, 231);
+}
+
+.hit{
+    background-color:red;
+}
+
+td:hover { 
+    opacity: 0.5;
+}
+
+.miss{
+    /* transition: all 0.3s; */
+    opacity: 0.2;
+}
