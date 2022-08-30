@@ -1,13 +1,52 @@
 import { getIdPosition,getNumberPosition } from "./src/modules.js";
-import { computerShips } from "./src/computerShips.js";
-import {humanShips} from './src/humanShips.js'
-import { logic } from './controller.js'
+import { computerShips } from './controller.js';
+import { humanShips } from './controller.js';
+// import { humanShips } from './src/humanShips.js';
+import { gameLogic } from './controller.js'
 
+const dataComp = {
+  computerBusyCells:[], 
+  computerShotsHistory:[],
+  shipToSmartSink:{},
+  busyCellsSmartShot:[]
+}
+
+const dataHuman = {
+  numberShip:0,
+  numberSection:0,
+  humanBusyCells:[],
+  humanShotsHistory:[],
+}
+
+export function chooseDifficult(event){
+  for( let key in gameLogic.difficult){
+    gameLogic.difficult[key] = ((key==event.target.id)?  true : false)
+    if(gameLogic.difficult[key]) gameLogic.isChooseDifficult= true
+  }
+}
+
+export function createShipsObjects(propsShips){
+  const ships=[]
+  for( let numShip=0; numShip< 10; numShip++){
+    let obj ={
+      isSink :false,
+      sections:[]
+    }
+    for(let numSection=0; numSection<propsShips[numShip]; numSection++){
+      let insideObj={
+        position : undefined,
+        isHit : false
+      }
+      obj.sections.push(insideObj)
+    }
+    ships.push(obj)
+  }
+  return ships
+}
+  
 //CREATE SHIPS FOR COMPUTER
-let busyPlacesOfShips=[]
 export function createShipsForComputer(numShip=0){
   const props ={
-    busyPlacesOfShips:[],
     numberByX:undefined,
     numberByY:undefined,
     randomNum:undefined,
@@ -23,11 +62,10 @@ export function createShipsForComputer(numShip=0){
     return createShipsForComputer(props.numberShip)
   }
 
-  if ( checkCellShipsOnBusyPlace(props) ){
-    fillBusyPlacesOfShips(props)
+  if ( checkCellShipsOnBusyPlace(props,dataComp) ){
+    fillcomputerBusyCells(props,dataComp)
   } else return createShipsForComputer(props.numberShip)
 
-  visualShip(props.numberShip)
   checkEndCreateShips(props)
   if(props.numberShip<=computerShips.length-1){
     createShipsForComputer(props.numberShip)
@@ -51,13 +89,13 @@ function fillCellsShip({randomNum,numberByX,numberByY, horizontalPosition, verti
   computerShips[numberShip].sections[0].position = randomNum
   if( verticalPosition && numberByY <= (10 - computerShips[numberShip].sections.length) ){
     for (let i=1; i<=computerShips[numberShip].sections.length-1; i++){
-      randomNum = randomNum +1
+      randomNum +=1
       computerShips[numberShip].sections[i].position = randomNum
     }
     return true
   } else if( horizontalPosition && numberByX <= (10 - computerShips[numberShip].sections.length)){
     for(let i=1; i<=computerShips[numberShip].sections.length-1; i++){
-      randomNum = randomNum +10
+      randomNum +=10
       computerShips[numberShip].sections[i].position = randomNum
     }
     return true
@@ -66,107 +104,94 @@ function fillCellsShip({randomNum,numberByX,numberByY, horizontalPosition, verti
   }
 } 
 
-function checkCellShipsOnBusyPlace({numberShip}){ 
-  let localBusyShips=[]
-    computerShips[numberShip].sections.forEach((section)=>{
-      busyPlacesOfShips.filter((place)=>{
-        localBusyShips.push (section.position == place)
-      })
-    }) 
-  let newArray=localBusyShips.filter(item=>item)
-  if(!newArray.length) {
-    return true
-  } else return false
+function checkCellShipsOnBusyPlace(props,{computerBusyCells}){ 
+  let isRepeat = computerShips[props.numberShip].sections.some((section)=>{
+    return computerBusyCells.some((cell)=>section.position == cell)
+  })
+  return isRepeat ? false : true
 }
 
-function fillBusyPlacesOfShips({horizontalPosition, verticalPosition,numberShip}){
-  computerShips[numberShip].sections.forEach((section)=>{
-    busyPlacesOfShips.push(section.position)
-     if(verticalPosition){
-       if ( !((section.position+1)%10) && section.position >10 ){
-        busyPlacesOfShips.push(section.position-10)
-        busyPlacesOfShips.push(section.position-1)
-        busyPlacesOfShips.push(section.position-11)
+function fillcomputerBusyCells(props,{computerBusyCells}){
+  computerShips[props.numberShip].sections.forEach((section)=>{
+    computerBusyCells.push(section.position)
+    if(props.verticalPosition){
+      if ( !((section.position+1)%10) && section.position >10 ){
+        computerBusyCells.push(section.position-10)
+        computerBusyCells.push(section.position-1)
+        computerBusyCells.push(section.position-11)
         if( section.position<90 ){
-          busyPlacesOfShips.push(section.position+9)
-          busyPlacesOfShips.push(section.position+10)
-        }
-       }
+          computerBusyCells.push(section.position+9)
+          computerBusyCells.push(section.position+10)
+      }
+      }
       if (section.position<10 ){
-        busyPlacesOfShips.push(section.position-1)
-        busyPlacesOfShips.push(section.position+10)
-        busyPlacesOfShips.push(section.position+9)
+        computerBusyCells.push(section.position-1)
+        computerBusyCells.push(section.position+10)
+        computerBusyCells.push(section.position+9)
         if( ( (section.position+1)%10 ) ){
-          busyPlacesOfShips.push(section.position+1)
-          busyPlacesOfShips.push(section.position+11)
-          busyPlacesOfShips.push(section.position+9)
+          computerBusyCells.push(section.position+1)
+          computerBusyCells.push(section.position+11)
+          computerBusyCells.push(section.position+9)
         }
       }
       if ((section.position+1)%10 && section.position> 10 && section.position<90){
-        busyPlacesOfShips.push(section.position-1)
-        busyPlacesOfShips.push(section.position+9)
-        busyPlacesOfShips.push(section.position+11)
-        busyPlacesOfShips.push(section.position-9)
-        busyPlacesOfShips.push(section.position-11)
-        busyPlacesOfShips.push(section.position+1)
-        busyPlacesOfShips.push(section.position+10)
-        busyPlacesOfShips.push(section.position-10)
+        computerBusyCells.push(section.position-1)
+        computerBusyCells.push(section.position+9)
+        computerBusyCells.push(section.position+11)
+        computerBusyCells.push(section.position-9)
+        computerBusyCells.push(section.position-11)
+        computerBusyCells.push(section.position+1)
+        computerBusyCells.push(section.position+10)
+        computerBusyCells.push(section.position-10)
       }
       if(section.position>=90  ){
-        busyPlacesOfShips.push(section.position-1)
-        busyPlacesOfShips.push(section.position-11)
-        busyPlacesOfShips.push(section.position-10)
+        computerBusyCells.push(section.position-1)
+        computerBusyCells.push(section.position-11)
+        computerBusyCells.push(section.position-10)
         if((section.position+1)%10){
-          busyPlacesOfShips.push(section.position+1)
-          busyPlacesOfShips.push(section.position-9)
+          computerBusyCells.push(section.position+1)
+          computerBusyCells.push(section.position-9)
         }
       }
     }
-    if(horizontalPosition){
+    if(props.horizontalPosition){
       if(section.position <10 && section.position !==0){
-        busyPlacesOfShips.push(section.position+1)
-        busyPlacesOfShips.push(section.position-1)
-        busyPlacesOfShips.push(section.position+11)
-        busyPlacesOfShips.push(section.position+10)
-        busyPlacesOfShips.push(section.position+9)
+        computerBusyCells.push(section.position+1)
+        computerBusyCells.push(section.position-1)
+        computerBusyCells.push(section.position+11)
+        computerBusyCells.push(section.position+10)
+        computerBusyCells.push(section.position+9)
       }
       if(section.position ==0){
-        busyPlacesOfShips.push(section.position+1)
-        busyPlacesOfShips.push(section.position+10)
-        busyPlacesOfShips.push(section.position+11)
+        computerBusyCells.push(section.position+1)
+        computerBusyCells.push(section.position+10)
+        computerBusyCells.push(section.position+11)
       }
       if( !(section.position%10) && section.position >=90   ){
-        busyPlacesOfShips.push(section.position+1)
-        busyPlacesOfShips.push(section.position-10)
-        busyPlacesOfShips.push(section.position-9)
+        computerBusyCells.push(section.position+1)
+        computerBusyCells.push(section.position-10)
+        computerBusyCells.push(section.position-9)
       }
       if( !(section.position%10) && section.position!==0 && (section.position+10)<100 ){
-        busyPlacesOfShips.push(section.position+10)
-        busyPlacesOfShips.push(section.position+11)
-        busyPlacesOfShips.push(section.position-9)
-        busyPlacesOfShips.push(section.position-10)
-        busyPlacesOfShips.push(section.position+1)
+        computerBusyCells.push(section.position+10)
+        computerBusyCells.push(section.position+11)
+        computerBusyCells.push(section.position-9)
+        computerBusyCells.push(section.position-10)
+        computerBusyCells.push(section.position+1)
       }
       if( (section.position%10) && section.position>10 ){
-        busyPlacesOfShips.push(section.position-9)
-        busyPlacesOfShips.push(section.position-10)
-        busyPlacesOfShips.push(section.position-11)
-        busyPlacesOfShips.push(section.position+1)
-        busyPlacesOfShips.push(section.position-1)
+        computerBusyCells.push(section.position-9)
+        computerBusyCells.push(section.position-10)
+        computerBusyCells.push(section.position-11)
+        computerBusyCells.push(section.position+1)
+        computerBusyCells.push(section.position-1)
         if((section.position+10)<100 ){
-          busyPlacesOfShips.push(section.position+9)
-          busyPlacesOfShips.push(section.position+10)
-          busyPlacesOfShips.push(section.position+11)
+          computerBusyCells.push(section.position+9)
+          computerBusyCells.push(section.position+10)
+          computerBusyCells.push(section.position+11)
         }
       }    
     }
-  })
-}
-
-function visualShip(numberShip){
-  computerShips[numberShip].sections.forEach((section)=>{
-    let IdPosition = getIdPosition(section.position)
-    document.getElementById(`${IdPosition}-comp`).classList.add('auto-ship')
   })
 }
 
@@ -176,141 +201,193 @@ function checkEndCreateShips(props){
     let localShips = ship.sections.filter((section)=>section.position !== undefined)
     if (ship.sections.length == localShips.length) props.numberShip++
   })
-   props.isCreateComputerShips=computerShips.every((ship=>ship.sections.every((section)=>section.position!==undefined)))
+  props.isCreateComputerShips=computerShips.every((ship=>ship.sections.every((section)=>section.position!==undefined)))
 }
 
 // CREATE HUMAN SHIPS
 
-let numberShip=0
-let numberSection=0
-const busyPlace=[]
 export function createHumanShips (event){
-    let humanShot = getNumberPosition(event.target.id)
-    if( !checkOnRepeatCell(humanShot) ) return console.log("repeat cell, change other cell");
-    if (  ! checkCreateShips() ){
-        createShips(humanShot)
-
-    } else {
-        console.log(humanShips,'humanShips');
-        console.log( 'all ships are create');
-        console.log('Human shoot on ships');
-        logic.isCreateHumanShips= true
-    }
+  let humanShot = getNumberPosition(event.target.id)
+  if( !checkOnRepeatCell(humanShot) ) return localStorage.setItem('humanMsg', 'repeat cell, change other cell')
+  createShips(humanShot)
+  if ( checkCreateShips() ){
+    localStorage.setItem('humanMsg', 'All ships are create')
+    gameLogic.isCreateHumanShips= true
+  } 
 }
 
 function createShips(humanShot){
-    busyPlace.push(humanShot)
-    if(humanShips[numberShip].sections[numberSection]){
-        humanShips[numberShip].sections[numberSection].position = humanShot
-        numberSection++
-        humanShips[numberShip].sections[numberSection] ? console.log('next section') : console.log('next ship' ) 
-    }  else {
-        numberSection =0
-        numberShip++
-        console.log(` ship has ${humanShips[numberShip].sections.length} sections`);
-        humanShips[numberShip].sections[numberSection].position= humanShot
-        numberSection++
-    } 
+  dataHuman.humanBusyCells.push(humanShot)
+  if(humanShips[dataHuman.numberShip].sections[dataHuman.numberSection]){
+    humanShips[dataHuman.numberShip].sections[dataHuman.numberSection].position = humanShot
+    dataHuman.numberSection++
+  }  else {
+    dataHuman.numberSection =0
+    dataHuman.numberShip++
+    humanShips[dataHuman.numberShip].sections[dataHuman.numberSection].position= humanShot
+    dataHuman.numberSection++ 
+  } 
+  localStorage.setItem('humanMsg', `you create sections ${dataHuman.numberSection} of ${ humanShips[dataHuman.numberShip].sections.length}` )
 }
 
 function checkCreateShips(){
-    return humanShips.every((ship)=>ship.sections.every((section)=> section.position !== undefined))
+  return humanShips.every((ship)=>ship.sections.every((section)=> section.position !== undefined))
 }
 
 function checkOnRepeatCell(humanShot){
-    return busyPlace.every((place)=> place !== humanShot)
+  return dataHuman.humanBusyCells.every((place)=> place !== humanShot)
 }
-
 
 // HUMAN SHOOT AT SHIPS
 
-let humanShotsHistory=[]
 export function humanShootAtShip(event){
-  if (!checkShotOnValid(event)) return // remake cause human dont shoot
-  let inputShot = getNumberPosition(event.target.id)
-  if( checkShotOnRepeat(inputShot) ){
-    addShotToHistory(inputShot)
-  } else return console.log('shot is repeat');
-    checkByHit(inputShot)
-    checkBySink()
+  const inputShot = getNumberPosition(event.target.id)
+  localStorage.setItem('humanShot', inputShot);
+  addShotToHistory(inputShot)
+  checkByHit(inputShot)
+  checkBySink(inputShot)
 }
 
-function checkShotOnValid(event){
+export function checkShotOnValid(event){
   return (event.target.tagName == 'TD') ? true : false
 }
 
-function checkShotOnRepeat(inputShot){
-    return humanShotsHistory.every((item)=> item !== inputShot)
+export function checkShotOnRepeat(event){
+  const inputShot = getNumberPosition(event.target.id)
+  return dataHuman.humanShotsHistory.every((item)=> item !== inputShot)
 }
 
 function addShotToHistory(inputShot){
-    humanShotsHistory.push(inputShot)
+  dataHuman.humanShotsHistory.push(inputShot)
 }
 
-function checkByHit(inputShot){
-    computerShips.forEach((ship)=>ship.sections.forEach((section)=>{
-        if (inputShot == section.position){
-            section.isHit = true
-        }
-    }))
+function checkByHit(inputShot){ 
+  const isHit = computerShips.some((ship)=>ship.sections.some((section)=>{
+    if (inputShot == section.position){
+      section.isHit = true
+      return true
+    }
+  }))
+  isHit ? localStorage.setItem('humanMsg', `You hit` ) : localStorage.setItem('humanMsg', `You miss` )
 }
 
-function checkBySink(){
-    computerShips.forEach((ship)=>{
-        ship.isSink = ship.sections.every((section)=>section.isHit)
+function checkBySink(inputShot){
+  let localShip
+  computerShips.forEach((ship)=>{
+    ship.isSink = ship.sections.every((section)=>{
+      if (section.position == inputShot){
+        localShip = ship
+      }
+      return section.isHit
     })
+  })
+  if (localShip && localShip.isSink){
+    localStorage.setItem('humanMsg', `You sunk` )
+  }
 }
 
 // SHOOT COMPUTER
 
-let computerShotsHistory=[]
 export function computerShootAtShips(){
-  let computerShot = Math.floor(Math.random()*100)
+  let computerShot
+  if (gameLogic.difficult.simple){
+    computerShot = Math.floor(Math.random()*100)
+  }
+  if (gameLogic.difficult.normal || gameLogic.difficult.heavy ){
+    computerShot = chooseShot(dataComp)
+  }
   localStorage.setItem('computerShot', computerShot);
-  if( checkComputerShotOnRepeat(computerShot) ){
+  if( checkComputerShotOnRepeat(computerShot) && checkComputerSmartShot(computerShot)){
     addComputerShotToHistory(computerShot)
   } else return computerShootAtShips()   
   checkComputerByHit(computerShot)
   checkHumanShipsBySink()
+  checkSmartShotBySink(dataComp)
+  if (dataComp.shipToSmartSink.isSink) addBusyCellsOnSmartShot(dataComp)
+}
+
+function chooseShot({shipToSmartSink}){
+  let localComputerShot
+  if ( shipToSmartSink.isSink || shipToSmartSink.isSink == undefined ){
+    localComputerShot = Math.floor(Math.random()*100)
+  } else {
+    shipToSmartSink.sections.forEach((section)=>{
+      if( !section.isHit ){localComputerShot = section.position}
+    })
   }
+  return localComputerShot
+}
 
 function checkComputerShotOnRepeat(computerShot){
-    return computerShotsHistory.every((item)=> item !== computerShot)
+  return dataComp.computerShotsHistory.every((item)=> item !== computerShot)
+}
+
+function checkComputerSmartShot(computerShot){
+  return dataComp.busyCellsSmartShot.every((item)=> item !== computerShot)
 }
 
 function addComputerShotToHistory(computerShot){
-  computerShotsHistory.push(computerShot)
+  dataComp.computerShotsHistory.push(computerShot)
 }
 
 function checkComputerByHit(computerShot){
-  humanShips.forEach((ship)=>ship.sections.forEach((section)=>{
+  const isHit = humanShips.some((ship)=>ship.sections.some((section)=>{
     if (computerShot == section.position){
-      section.isHit = true 
-      localStorage.setItem('sectionIsHit',section.position)
+      dataComp.shipToSmartSink = {...ship}
+      return section.isHit = true 
     }
   }))
+  isHit ? localStorage.setItem('humanMsg', `Computer hit` ) : localStorage.setItem('humanMsg', `Computer miss` )
 }
 
 function checkHumanShipsBySink(){
   humanShips.forEach((ship)=>{
-      ship.isSink = ship.sections.every((section)=>section.isHit)
+    ship.isSink = ship.sections.every((section)=>section.isHit)
   })
 }
 
+function checkSmartShotBySink({shipToSmartSink}){
+  if(Object.keys(shipToSmartSink).length !== 0 && shipToSmartSink.constructor == Object){
+    shipToSmartSink.isSink = shipToSmartSink.sections.every((section)=>section.isHit)
+  }
+}
+
+function addBusyCellsOnSmartShot({busyCellsSmartShot}){
+  dataComp.shipToSmartSink.sections.forEach((section)=>{
+    if(section.position>10 && section.position<90 && section.position%10 && (section.position+1)%10){
+      busyCellsSmartShot.push(section.position+1)
+      busyCellsSmartShot.push(section.position-1)
+      busyCellsSmartShot.push(section.position+10)
+      busyCellsSmartShot.push(section.position-10)
+      if(gameLogic.difficult.heavy){
+        busyCellsSmartShot.push(section.position+9)
+        busyCellsSmartShot.push(section.position-9)
+        busyCellsSmartShot.push(section.position-11)
+        busyCellsSmartShot.push(section.position+11)
+      }
+    }
+  })
+  // busyCellsSmartShot.forEach((cell)=>{
+  //   const computerShotId = `${getIdPosition(cell)}-human`
+  //   document.getElementById( `${computerShotId}` ).classList.add('auto-ship_busy')
+  // })
+}
+
 export function checkWhoWin(ships, player){
-  let isGameOver =ships.every((ship)=>ship.isSink)
+  const isGameOver =ships.every((ship)=>ship.isSink)
   if (isGameOver){ 
-    console.log(`${player.toUpperCase()} ARE WIN!`);
+    const humanMsg =`${player.toUpperCase()} ARE WIN!`
+    localStorage.setItem('humanMsg', humanMsg);
     return true
   } else return false
 }
 
 export function fireSecondShot (event){
-  let humanShot = getNumberPosition(event.target.id)
+  const humanShot = getNumberPosition(event.target.id)
   return computerShips.some((ship)=>ship.sections.some((section)=>section.position == humanShot))
 }
 
 export function fireSecondShotComuter (){
-  let computerShot = localStorage.getItem('computerShot')
+  const computerShot = localStorage.getItem('computerShot')
   return humanShips.some((ship)=>ship.sections.some((section)=>section.position == computerShot))
 }

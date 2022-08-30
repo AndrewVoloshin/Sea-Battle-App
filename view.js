@@ -1,10 +1,38 @@
 import { getIdPosition, } from "./src/modules.js"
-import {humanShips} from './src/humanShips.js'
-import {computerShips} from './src/computerShips.js'
+import { computerShips} from './controller.js';
+import { humanShips } from './controller.js';
+// import { humanShips } from './src/humanShips.js';
+
+export function gameStart(event){
+  const modalButton = document.querySelector('.modal__button')
+  modalButton.classList.add('modal__button_on')
+  const modalWindow = document.querySelector('.modal__window')
+  modalWindow.classList.add('modal__window_on')
+}
+
+export function render(){
+  document.querySelector('.modal').classList.add('modal_off')
+  document.querySelector('.container').classList.add('container_on')
+}
+
+export function changeInfoFrame(str){
+  const div = document.createElement('div')
+  document.querySelector('.frame-info').appendChild(div)
+  div.classList.add('info')
+  div.innerHTML=str
+  let domElems = document.querySelectorAll('.info')
+  if(domElems.length >=3){
+    domElems[0].classList.add('remove')
+  }
+  if(domElems.length ==4){
+    domElems[0].remove()
+    domElems[1].classList.add('remove')
+  }
+} 
 
 export function createBattleField ( player ){
   const table = document.createElement('table')
-  document.body.appendChild(table)
+  document.querySelector('.container').appendChild(table)
   table.classList.add(`table-${player}`)
 
   const th = document.createElement('th')
@@ -37,12 +65,11 @@ export function createBattleField ( player ){
   caption.innerHTML=` ${player}`
   caption.style.fontSize='30px'
 }
-
-export function showHumanShips (){
-  humanShips.forEach((ship)=>ship.sections.forEach((section)=>{
+export function showShips (ships,player){
+  ships.forEach((ship)=>ship.sections.forEach((section)=>{
     if ( section.position !== undefined){
       let id= getIdPosition(section.position)
-      document.getElementById(`${id}-human`).classList.add('auto-ship')
+      document.getElementById(`${id}-${player}`).classList.add('ship')
     }
   }))
 }
@@ -74,3 +101,18 @@ export function showHumanField(){
     })
   })
 }
+
+// export function showField(ships,playerShot,player){
+//   playerShot = localStorage.getItem(`${playerShot}`)
+//   let shotId = `${getIdPosition(playerShot)}-${player}`
+//   document.getElementById( `${shotId}` ).classList.add('miss')
+//   ships.forEach((ship)=>{
+//     ship.sections.forEach((section)=>{
+//       if (section.isHit){
+//         let id= `${getIdPosition(section.position)}-human`
+//         document.getElementById( `${id}` ).classList.add('hit')
+//         document.getElementById( `${id}` ).classList.remove('miss')
+//       }
+//     })
+//   })
+// }
