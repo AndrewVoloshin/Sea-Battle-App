@@ -20,7 +20,7 @@ body{
     background: var(--main-bg-color);
 } 
 
-.toggle-var{
+.theme-light{
     --main-bg-color: #D6F4F2;
     --main-color: #ABC2C0;
     --text-color: white;
@@ -32,7 +32,7 @@ body{
     --toggle-bg:#677574;
 }
 
-.toggle{
+.toggle__content{
     background: var(--toggle-bg);
     outline: none;
     width: 30px; 
@@ -40,7 +40,7 @@ body{
     border-radius: 50%;
 }
 
-.toggle-wrap{
+.toggle-theme{
     position: absolute;
     display: inline-block;
     margin: 10px 0 0 15px;
@@ -63,10 +63,6 @@ body{
     color:white;
 }
 
-.modal_off{
-    display:none;
-}
-
 .modal__button{
     display: flex;
     justify-content: center;
@@ -82,10 +78,6 @@ body{
     border: 1px solid var(--border);
     color:white;
     letter-spacing: 2px;
-}
-
-.modal__button_on{
-    display: none;
 }
 
 .modal__window{
@@ -141,12 +133,8 @@ body{
     display: none;
 }
 
-.container{
+.gameboard{
     display: none;
-}
-
-.container_on{
-    display: flex;
     justify-content: center;
     height: 100vh;
     align-items: center;
@@ -251,7 +239,7 @@ td:hover {
 }
 
  @media (max-width: 789px) { 
-    .container_on{
+    .gameboard{
         flex-direction: column;
         height: 100%;
     }
@@ -266,7 +254,7 @@ td:hover {
  }
 
  @media (min-width: 790px) {
-    .container_on{
+    .gameboard{
         flex-wrap: wrap;
     }
  
@@ -285,7 +273,7 @@ td:hover {
   }
   
   @media (min-width: 1170px) { 
-    .container_on{
+    .gameboard{
         flex-wrap: nowrap;
     }
     .table-human{

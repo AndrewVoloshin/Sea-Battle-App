@@ -3,7 +3,6 @@ import { computerShips } from "./controller.js";
 import { humanShips } from "./controller.js";
 // import { humanShips } from './src/humanShips.js';
 import { gameLogic } from "./controller.js";
-// test
 const dataComp = {
   computerBusyCells: [],
   computerShotsHistory: [],
@@ -127,6 +126,7 @@ function checkCellShipsOnBusyPlace(props, { computerBusyCells }) {
 }
 
 function fillcomputerBusyCells(props, { computerBusyCells }) {
+  console.log(computerBusyCells, "computerBusyCells");
   computerShips[props.numberShip].sections.forEach((section) => {
     computerBusyCells.push(section.position);
     if (props.verticalPosition) {
