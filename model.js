@@ -27,28 +27,30 @@ export function chooseDifficult(event) {
 export function createShipsObjects(propsShips) {
   const ships = [];
   for (let numShip = 0; numShip < 10; numShip++) {
-    let obj = {
+    let shipObj = {
       isSink: false,
       sections: [],
     };
     for (let numSection = 0; numSection < propsShips[numShip]; numSection++) {
-      let insideObj = {
-        position: undefined,
+      let shipSections = {
+        //  position undefined!!!!!!!!!!!!
+        position: null,
         isHit: false,
       };
-      obj.sections.push(insideObj);
+      shipObj.sections.push(shipSections);
     }
-    ships.push(obj);
+    ships.push(shipObj);
   }
+  console.log(ships);
   return ships;
 }
 
 //CREATE SHIPS FOR COMPUTER
 export function createShipsForComputer(numShip = 0) {
   const props = {
-    numberByX: undefined,
-    numberByY: undefined,
-    randomNum: undefined,
+    numberByX: null,
+    numberByY: null,
+    randomNum: null,
     verticalPosition: false,
     horizontalPosition: false,
     numberShip: numShip,
@@ -56,6 +58,7 @@ export function createShipsForComputer(numShip = 0) {
   };
 
   createRandomCellShip(props);
+  console.log(props, "props");
 
   if (!fillCellsShip(props)) {
     return createShipsForComputer(props.numberShip);
@@ -222,13 +225,14 @@ function checkEndCreateShips(props) {
   props.numberShip = 0;
   computerShips.forEach((ship) => {
     let localShips = ship.sections.filter(
-      (section) => section.position !== undefined
+      (section) => section.position !== null
     );
     if (ship.sections.length == localShips.length) props.numberShip++;
   });
   props.isCreateComputerShips = computerShips.every((ship) =>
-    ship.sections.every((section) => section.position !== undefined)
+    ship.sections.every((section) => section.position !== null)
   );
+  console.log(computerShips);
 }
 
 // CREATE HUMAN SHIPS
@@ -269,7 +273,7 @@ function createShips(humanShot) {
 
 function checkCreateShips() {
   return humanShips.every((ship) =>
-    ship.sections.every((section) => section.position !== undefined)
+    ship.sections.every((section) => section.position !== null)
   );
 }
 

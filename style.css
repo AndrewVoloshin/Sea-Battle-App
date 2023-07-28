@@ -147,7 +147,7 @@ body{
     order: 2;
 }
 
-.table-comp{
+.table-computer{
     margin-top: 20px;
     margin-right: 25px;
     border-collapse:separate;
@@ -258,7 +258,7 @@ td:hover {
         flex-wrap: wrap;
     }
  
-    .table-comp{
+    .table-computer{
         order: 1;
     }
  

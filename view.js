@@ -66,7 +66,7 @@ export function createBattleField(player) {
 export function showShips(ships, player) {
   ships.forEach((ship) =>
     ship.sections.forEach((section) => {
-      if (section.position !== undefined) {
+      if (section.position !== null) {
         let id = getIdPosition(section.position);
         document.getElementById(`${id}-${player}`).classList.add("ship");
       }
@@ -79,7 +79,7 @@ export function showComputerField(event) {
   computerShips.forEach((ship) => {
     ship.sections.forEach((section) => {
       if (section.isHit) {
-        let id = `${getIdPosition(section.position)}-comp`;
+        let id = `${getIdPosition(section.position)}-computer`;
         document.getElementById(`${id}`).classList.add("hit");
         document.getElementById(`${id}`).classList.remove("miss");
       }

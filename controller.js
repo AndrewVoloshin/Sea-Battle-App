@@ -20,7 +20,7 @@ import { gameStart, render } from "./view.js";
 localStorage.clear();
 
 export const gameLogic = {
-  shipObj: [4, 3, 3, 2, 2, 2, 1, 1, 1, 1],
+  shipSectionsParam: [4, 3, 3, 2, 2, 2, 1, 1, 1, 1],
   isCreateHumanShips: false,
   isGameOver: false,
   isChooseDifficult: false,
@@ -43,16 +43,18 @@ document.querySelector(".modal__window").onclick = function (event) {
   if (gameLogic.isChooseDifficult) render();
 };
 
-// render();
+render();
 
-export const humanShips = createShipsObjects(gameLogic.shipObj);
-export const computerShips = createShipsObjects(gameLogic.shipObj);
+export const humanShips = createShipsObjects(gameLogic.shipSectionsParam);
+export const computerShips = createShipsObjects(gameLogic.shipSectionsParam);
 
-createBattleField("comp");
+createBattleField("computer");
+
 createBattleField("human");
 changeInfoFrame("Create ships please");
 createShipsForComputer();
-// showShips(computerShips,'comp')
+// console.log(computerShips, "computerShips");
+showShips(computerShips, "computer");
 
 document.querySelector(".table-human").onclick = function (event) {
   if (gameLogic.isCreateHumanShips) return;
@@ -62,7 +64,7 @@ document.querySelector(".table-human").onclick = function (event) {
   if (gameLogic.isCreateHumanShips) changeInfoFrame("Let's shoot on ships");
 };
 
-document.querySelector(".table-comp").onclick = function (event) {
+document.querySelector(".table-computer").onclick = function (event) {
   if (!checkShotOnValid(event)) return;
   if (!gameLogic.isCreateHumanShips)
     return changeInfoFrame("Create your ships");
