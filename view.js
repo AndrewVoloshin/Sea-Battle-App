@@ -102,17 +102,17 @@ export function showHumanField() {
   });
 }
 
-// export function showField(ships,playerShot,player){
-//   playerShot = localStorage.getItem(`${playerShot}`)
-//   let shotId = `${getIdPosition(playerShot)}-${player}`
-//   document.getElementById( `${shotId}` ).classList.add('miss')
-//   ships.forEach((ship)=>{
-//     ship.sections.forEach((section)=>{
-//       if (section.isHit){
-//         let id= `${getIdPosition(section.position)}-human`
-//         document.getElementById( `${id}` ).classList.add('hit')
-//         document.getElementById( `${id}` ).classList.remove('miss')
+// export function showField(ships, playerShot, player) {
+//   playerShot = localStorage.getItem(`${playerShot}`);
+//   let shotId = `${getIdPosition(playerShot)}-${player}`;
+//   document.getElementById(`${shotId}`).classList.add("miss");
+//   ships.forEach((ship) => {
+//     ship.sections.forEach((section) => {
+//       if (section.isHit) {
+//         let id = `${getIdPosition(section.position)}-human`;
+//         document.getElementById(`${id}`).classList.add("hit");
+//         document.getElementById(`${id}`).classList.remove("miss");
 //       }
-//     })
-//   })
+//     });
+//   });
 // }

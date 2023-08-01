@@ -178,8 +178,11 @@ th {
 }
 
 .ship{
-    background-color: var(--text-color);
+    background-color: var(--text-color)!important;
     border-radius: 5px;
+}
+.busy{
+    background-color:yellow
 }
 
 .hit{

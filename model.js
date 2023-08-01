@@ -10,6 +10,15 @@ const dataComp = {
   busyCellsSmartShot: [],
 };
 
+export function showBusyField() {
+  console.log(dataComp.computerBusyCells, "dataComp.computerBusyCells");
+  dataComp.computerBusyCells.forEach((cell) => {
+    if (cell < 0) return;
+    let id = getIdPosition(cell);
+    document.getElementById(`${id}-computer`).classList.add("busy");
+  });
+}
+
 const dataHuman = {
   numberShip: 0,
   numberSection: 0,
@@ -33,7 +42,6 @@ export function createShipsObjects(propsShips) {
     };
     for (let numSection = 0; numSection < propsShips[numShip]; numSection++) {
       let shipSections = {
-        //  position undefined!!!!!!!!!!!!
         position: null,
         isHit: false,
       };
@@ -65,7 +73,7 @@ export function createShipsForComputer(numShip = 0) {
   }
 
   if (checkCellShipsOnBusyPlace(props, dataComp)) {
-    fillcomputerBusyCells(props, dataComp);
+    fillcomputerBusyCells(props, dataComp.computerBusyCells); ////heere
   } else return createShipsForComputer(props.numberShip);
 
   checkEndCreateShips(props);
@@ -84,33 +92,18 @@ function createRandomCellShip(props) {
     props.numberByX = numberSplit[0];
     props.numberByY = numberSplit[1];
   }
-  !(props.randomNum % 2)
-    ? (props.horizontalPosition = true)
-    : (props.verticalPosition = true);
+  !(props.randomNum % 2) ? (props.horizontalPosition = true) : (props.verticalPosition = true);
 }
 
-function fillCellsShip({
-  randomNum,
-  numberByX,
-  numberByY,
-  horizontalPosition,
-  verticalPosition,
-  numberShip,
-}) {
+function fillCellsShip({ randomNum, numberByX, numberByY, horizontalPosition, verticalPosition, numberShip }) {
   computerShips[numberShip].sections[0].position = randomNum;
-  if (
-    verticalPosition &&
-    numberByY <= 10 - computerShips[numberShip].sections.length
-  ) {
+  if (verticalPosition && numberByY <= 10 - computerShips[numberShip].sections.length) {
     for (let i = 1; i <= computerShips[numberShip].sections.length - 1; i++) {
       randomNum += 1;
       computerShips[numberShip].sections[i].position = randomNum;
     }
     return true;
-  } else if (
-    horizontalPosition &&
-    numberByX <= 10 - computerShips[numberShip].sections.length
-  ) {
+  } else if (horizontalPosition && numberByX <= 10 - computerShips[numberShip].sections.length) {
     for (let i = 1; i <= computerShips[numberShip].sections.length - 1; i++) {
       randomNum += 10;
       computerShips[numberShip].sections[i].position = randomNum;
@@ -128,93 +121,55 @@ function checkCellShipsOnBusyPlace(props, { computerBusyCells }) {
   return isRepeat ? false : true;
 }
 
-function fillcomputerBusyCells(props, { computerBusyCells }) {
-  console.log(computerBusyCells, "computerBusyCells");
+function addPositionsToComputerBusyCells(sectionPosition, positions) {
+  positions.forEach((position) => dataComp.computerBusyCells.push(sectionPosition + position));
+}
+
+function fillcomputerBusyCells(props, computerBusyCells) {
   computerShips[props.numberShip].sections.forEach((section) => {
     computerBusyCells.push(section.position);
     if (props.verticalPosition) {
       if (!((section.position + 1) % 10) && section.position > 10) {
-        computerBusyCells.push(section.position - 10);
-        computerBusyCells.push(section.position - 1);
-        computerBusyCells.push(section.position - 11);
+        addPositionsToComputerBusyCells(section.position, [-10, -1, -11]);
         if (section.position < 90) {
-          computerBusyCells.push(section.position + 9);
-          computerBusyCells.push(section.position + 10);
+          addPositionsToComputerBusyCells(section.position, [9, 10]);
         }
       }
       if (section.position < 10) {
-        computerBusyCells.push(section.position - 1);
-        computerBusyCells.push(section.position + 10);
-        computerBusyCells.push(section.position + 9);
+        addPositionsToComputerBusyCells(section.position, [-1, 9, 10]);
         if ((section.position + 1) % 10) {
-          computerBusyCells.push(section.position + 1);
-          computerBusyCells.push(section.position + 11);
-          computerBusyCells.push(section.position + 9);
+          addPositionsToComputerBusyCells(section.position, [1, 9, 10]);
         }
       }
-      if (
-        (section.position + 1) % 10 &&
-        section.position > 10 &&
-        section.position < 90
-      ) {
-        computerBusyCells.push(section.position - 1);
-        computerBusyCells.push(section.position + 9);
-        computerBusyCells.push(section.position + 11);
-        computerBusyCells.push(section.position - 9);
-        computerBusyCells.push(section.position - 11);
-        computerBusyCells.push(section.position + 1);
-        computerBusyCells.push(section.position + 10);
-        computerBusyCells.push(section.position - 10);
+      if ((section.position + 1) % 10 && section.position > 10 && section.position < 90) {
+        addPositionsToComputerBusyCells(section.position, [-1, 9, 11, -9, -11, 1, 10, -10]);
       }
       if (section.position >= 90) {
-        computerBusyCells.push(section.position - 1);
-        computerBusyCells.push(section.position - 11);
-        computerBusyCells.push(section.position - 10);
+        addPositionsToComputerBusyCells(section.position, [-1, -11, -10]);
+
         if ((section.position + 1) % 10) {
-          computerBusyCells.push(section.position + 1);
-          computerBusyCells.push(section.position - 9);
+          addPositionsToComputerBusyCells(section.position, [1, -9]);
         }
       }
     }
     if (props.horizontalPosition) {
       if (section.position < 10 && section.position !== 0) {
-        computerBusyCells.push(section.position + 1);
-        computerBusyCells.push(section.position - 1);
-        computerBusyCells.push(section.position + 11);
-        computerBusyCells.push(section.position + 10);
-        computerBusyCells.push(section.position + 9);
+        addPositionsToComputerBusyCells(section.position, [1, -1, 11, 10, 9]);
       }
       if (section.position == 0) {
-        computerBusyCells.push(section.position + 1);
-        computerBusyCells.push(section.position + 10);
-        computerBusyCells.push(section.position + 11);
+        addPositionsToComputerBusyCells(section.position, [1, 10, 11]);
       }
       if (!(section.position % 10) && section.position >= 90) {
-        computerBusyCells.push(section.position + 1);
-        computerBusyCells.push(section.position - 10);
-        computerBusyCells.push(section.position - 9);
+        addPositionsToComputerBusyCells(section.position, [1, -10, -9]);
       }
-      if (
-        !(section.position % 10) &&
-        section.position !== 0 &&
-        section.position + 10 < 100
-      ) {
-        computerBusyCells.push(section.position + 10);
-        computerBusyCells.push(section.position + 11);
-        computerBusyCells.push(section.position - 9);
-        computerBusyCells.push(section.position - 10);
-        computerBusyCells.push(section.position + 1);
+      if (!(section.position % 10) && section.position !== 0 && section.position + 10 < 100) {
+        addPositionsToComputerBusyCells(section.position, [10, 11, -9, -10, 1]);
       }
       if (section.position % 10 && section.position > 10) {
-        computerBusyCells.push(section.position - 9);
-        computerBusyCells.push(section.position - 10);
-        computerBusyCells.push(section.position - 11);
-        computerBusyCells.push(section.position + 1);
-        computerBusyCells.push(section.position - 1);
+        addPositionsToComputerBusyCells(section.position, [-9, -10, -11, 1, -1]);
+
         if (section.position + 10 < 100) {
-          computerBusyCells.push(section.position + 9);
-          computerBusyCells.push(section.position + 10);
-          computerBusyCells.push(section.position + 11);
+          addPositionsToComputerBusyCells(section.position, [9, 10, 11]);
         }
       }
     }
@@ -224,9 +179,7 @@ function fillcomputerBusyCells(props, { computerBusyCells }) {
 function checkEndCreateShips(props) {
   props.numberShip = 0;
   computerShips.forEach((ship) => {
-    let localShips = ship.sections.filter(
-      (section) => section.position !== null
-    );
+    let localShips = ship.sections.filter((section) => section.position !== null);
     if (ship.sections.length == localShips.length) props.numberShip++;
   });
   props.isCreateComputerShips = computerShips.every((ship) =>
@@ -239,8 +192,7 @@ function checkEndCreateShips(props) {
 
 export function createHumanShips(event) {
   let humanShot = getNumberPosition(event.target.id);
-  if (!checkOnRepeatCell(humanShot))
-    return localStorage.setItem("humanMsg", "repeat cell, change other cell");
+  if (!checkOnRepeatCell(humanShot)) return localStorage.setItem("humanMsg", "repeat cell, change other cell");
   createShips(humanShot);
   if (checkCreateShips()) {
     localStorage.setItem("humanMsg", "All ships are create");
@@ -251,30 +203,22 @@ export function createHumanShips(event) {
 function createShips(humanShot) {
   dataHuman.humanBusyCells.push(humanShot);
   if (humanShips[dataHuman.numberShip].sections[dataHuman.numberSection]) {
-    humanShips[dataHuman.numberShip].sections[
-      dataHuman.numberSection
-    ].position = humanShot;
+    humanShips[dataHuman.numberShip].sections[dataHuman.numberSection].position = humanShot;
     dataHuman.numberSection++;
   } else {
     dataHuman.numberSection = 0;
     dataHuman.numberShip++;
-    humanShips[dataHuman.numberShip].sections[
-      dataHuman.numberSection
-    ].position = humanShot;
+    humanShips[dataHuman.numberShip].sections[dataHuman.numberSection].position = humanShot;
     dataHuman.numberSection++;
   }
   localStorage.setItem(
     "humanMsg",
-    `you create sections ${dataHuman.numberSection} of ${
-      humanShips[dataHuman.numberShip].sections.length
-    }`
+    `you create sections ${dataHuman.numberSection} of ${humanShips[dataHuman.numberShip].sections.length}`
   );
 }
 
 function checkCreateShips() {
-  return humanShips.every((ship) =>
-    ship.sections.every((section) => section.position !== null)
-  );
+  return humanShips.every((ship) => ship.sections.every((section) => section.position !== null));
 }
 
 function checkOnRepeatCell(humanShot) {
@@ -313,9 +257,7 @@ function checkByHit(inputShot) {
       }
     })
   );
-  isHit
-    ? localStorage.setItem("humanMsg", `You hit`)
-    : localStorage.setItem("humanMsg", `You miss`);
+  isHit ? localStorage.setItem("humanMsg", `You hit`) : localStorage.setItem("humanMsg", `You miss`);
 }
 
 function checkBySink(inputShot) {
@@ -344,10 +286,7 @@ export function computerShootAtShips() {
     computerShot = chooseShot(dataComp);
   }
   localStorage.setItem("computerShot", computerShot);
-  if (
-    checkComputerShotOnRepeat(computerShot) &&
-    checkComputerSmartShot(computerShot)
-  ) {
+  if (checkComputerShotOnRepeat(computerShot) && checkComputerSmartShot(computerShot)) {
     addComputerShotToHistory(computerShot);
   } else return computerShootAtShips();
   checkComputerByHit(computerShot);
@@ -391,9 +330,7 @@ function checkComputerByHit(computerShot) {
       }
     })
   );
-  isHit
-    ? localStorage.setItem("humanMsg", `Computer hit`)
-    : localStorage.setItem("humanMsg", `Computer miss`);
+  isHit ? localStorage.setItem("humanMsg", `Computer hit`) : localStorage.setItem("humanMsg", `Computer miss`);
 }
 
 function checkHumanShipsBySink() {
@@ -403,24 +340,14 @@ function checkHumanShipsBySink() {
 }
 
 function checkSmartShotBySink({ shipToSmartSink }) {
-  if (
-    Object.keys(shipToSmartSink).length !== 0 &&
-    shipToSmartSink.constructor == Object
-  ) {
-    shipToSmartSink.isSink = shipToSmartSink.sections.every(
-      (section) => section.isHit
-    );
+  if (Object.keys(shipToSmartSink).length !== 0 && shipToSmartSink.constructor == Object) {
+    shipToSmartSink.isSink = shipToSmartSink.sections.every((section) => section.isHit);
   }
 }
 
 function addBusyCellsOnSmartShot({ busyCellsSmartShot }) {
   dataComp.shipToSmartSink.sections.forEach((section) => {
-    if (
-      section.position > 10 &&
-      section.position < 90 &&
-      section.position % 10 &&
-      (section.position + 1) % 10
-    ) {
+    if (section.position > 10 && section.position < 90 && section.position % 10 && (section.position + 1) % 10) {
       busyCellsSmartShot.push(section.position + 1);
       busyCellsSmartShot.push(section.position - 1);
       busyCellsSmartShot.push(section.position + 10);
@@ -450,14 +377,10 @@ export function checkWhoWin(ships, player) {
 
 export function fireSecondShot(event) {
   const humanShot = getNumberPosition(event.target.id);
-  return computerShips.some((ship) =>
-    ship.sections.some((section) => section.position == humanShot)
-  );
+  return computerShips.some((ship) => ship.sections.some((section) => section.position == humanShot));
 }
 
 export function fireSecondShotComuter() {
   const computerShot = localStorage.getItem("computerShot");
-  return humanShips.some((ship) =>
-    ship.sections.some((section) => section.position == computerShot)
-  );
+  return humanShips.some((ship) => ship.sections.some((section) => section.position == computerShot));
 }

@@ -7,6 +7,7 @@ import {
   createShipsObjects,
 } from "./model.js";
 import {
+  showBusyField,
   humanShootAtShip,
   computerShootAtShips,
   checkWhoWin,
@@ -54,6 +55,9 @@ createBattleField("human");
 changeInfoFrame("Create ships please");
 createShipsForComputer();
 // console.log(computerShips, "computerShips");
+
+showBusyField()
+
 showShips(computerShips, "computer");
 
 document.querySelector(".table-human").onclick = function (event) {
@@ -66,8 +70,7 @@ document.querySelector(".table-human").onclick = function (event) {
 
 document.querySelector(".table-computer").onclick = function (event) {
   if (!checkShotOnValid(event)) return;
-  if (!gameLogic.isCreateHumanShips)
-    return changeInfoFrame("Create your ships");
+  if (!gameLogic.isCreateHumanShips) return changeInfoFrame("Create your ships");
   if (gameLogic.isGameOver) return;
   if (!checkShotOnRepeat(event)) return changeInfoFrame("Shot is repeat");
   humanShootAtShip(event);
