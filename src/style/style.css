@@ -178,7 +178,7 @@ th {
 }
 
 .ship{
-    background-color: var(--text-color)!important;
+    background-color: var(--text-color);
     border-radius: 5px;
 }
 .busy{

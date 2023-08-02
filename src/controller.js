@@ -37,7 +37,6 @@ export const humanShips = createShipsObjects(gameLogic.shipSectionsParam);
 export const computerShips = createShipsObjects(gameLogic.shipSectionsParam);
 
 export function start() {
-  
   document.querySelector(".toggle-theme").onclick = function () {
     document.body.classList.toggle("theme-light");
     gameLogic.isDark = !gameLogic.isDark;
@@ -58,7 +57,7 @@ export function start() {
   createShipsForComputer();
   // console.log(computerShips, "computerShips");
 
-  showBusyField();
+  // showBusyField();
 
   showShips(computerShips, "computer");
 

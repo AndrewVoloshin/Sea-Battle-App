@@ -11,7 +11,6 @@ const dataComp = {
 };
 
 export function showBusyField() {
-  console.log(dataComp.computerBusyCells, "dataComp.computerBusyCells");
   dataComp.computerBusyCells.forEach((cell) => {
     if (cell < 0) return;
     let id = getIdPosition(cell);
@@ -49,7 +48,6 @@ export function createShipsObjects(propsShips) {
     }
     ships.push(shipObj);
   }
-  console.log(ships);
   return ships;
 }
 
@@ -66,7 +64,6 @@ export function createShipsForComputer(numShip = 0) {
   };
 
   createRandomCellShip(props);
-  console.log(props, "props");
 
   if (!fillCellsShip(props)) {
     return createShipsForComputer(props.numberShip);
@@ -185,12 +182,12 @@ function checkEndCreateShips(props) {
   props.isCreateComputerShips = computerShips.every((ship) =>
     ship.sections.every((section) => section.position !== null)
   );
-  console.log(computerShips);
 }
 
 // CREATE HUMAN SHIPS
 
 export function createHumanShips(event) {
+  if (event.target === document.querySelector(".table-human")) return;
   let humanShot = getNumberPosition(event.target.id);
   if (!checkOnRepeatCell(humanShot)) return localStorage.setItem("humanMsg", "repeat cell, change other cell");
   createShips(humanShot);
