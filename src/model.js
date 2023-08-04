@@ -1,10 +1,10 @@
 import { getIdPosition, getNumberPosition } from "./modules/utils.js";
 import { computerShips } from "./controller.js";
-import { humanShips } from "./controller.js";
-// import { humanShips } from './src/humanShips.js';
+// import { humanShips } from "./controller.js";
+import { humanShips } from "./humanShips.js";
 import { gameLogic } from "./controller.js";
 const dataComp = {
-  computerBusyCells: [],
+  computerBusyCells: new Set([]),
   computerShotsHistory: [],
   shipToSmartSink: {},
   busyCellsSmartShot: [],
@@ -113,18 +113,20 @@ function fillCellsShip({ randomNum, numberByX, numberByY, horizontalPosition, ve
 
 function checkCellShipsOnBusyPlace(props, { computerBusyCells }) {
   let isRepeat = computerShips[props.numberShip].sections.some((section) => {
-    return computerBusyCells.some((cell) => section.position == cell);
+    const copyArr = [];
+    computerBusyCells.forEach((cell) => copyArr.push(cell));
+    return copyArr.some((cell) => section.position == cell);
   });
   return isRepeat ? false : true;
 }
 
 function addPositionsToComputerBusyCells(sectionPosition, positions) {
-  positions.forEach((position) => dataComp.computerBusyCells.push(sectionPosition + position));
+  positions.forEach((position) => dataComp.computerBusyCells.add(sectionPosition + position));
 }
 
 function fillcomputerBusyCells(props, computerBusyCells) {
   computerShips[props.numberShip].sections.forEach((section) => {
-    computerBusyCells.push(section.position);
+    computerBusyCells.add(section.position);
     if (props.verticalPosition) {
       if (!((section.position + 1) % 10) && section.position > 10) {
         addPositionsToComputerBusyCells(section.position, [-10, -1, -11]);
@@ -171,6 +173,7 @@ function fillcomputerBusyCells(props, computerBusyCells) {
       }
     }
   });
+  console.log(computerBusyCells, "ComputerBusyCells");
 }
 
 function checkEndCreateShips(props) {
@@ -323,6 +326,7 @@ function checkComputerByHit(computerShot) {
     ship.sections.some((section) => {
       if (computerShot == section.position) {
         dataComp.shipToSmartSink = { ...ship };
+
         return (section.isHit = true);
       }
     })
@@ -337,9 +341,7 @@ function checkHumanShipsBySink() {
 }
 
 function checkSmartShotBySink({ shipToSmartSink }) {
-  if (Object.keys(shipToSmartSink).length !== 0 && shipToSmartSink.constructor == Object) {
-    shipToSmartSink.isSink = shipToSmartSink.sections.every((section) => section.isHit);
-  }
+  shipToSmartSink.isSink = shipToSmartSink.sections?.every((section) => section.isHit);
 }
 
 function addBusyCellsOnSmartShot({ busyCellsSmartShot }) {

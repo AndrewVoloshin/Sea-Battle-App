@@ -16,13 +16,14 @@ import {
   chooseDifficult,
 } from "./model.js";
 import { showComputerField, showHumanField, changeInfoFrame } from "./view.js";
-// import { humanShips } from './src/humanShips.js';
+import { humanShips } from './humanShips.js';
 import { gameStart, render } from "./view.js";
 localStorage.clear();
 
 export const gameLogic = {
   shipSectionsParam: [4, 3, 3, 2, 2, 2, 1, 1, 1, 1],
   isCreateHumanShips: false,
+  // isCreateHumanShips: true,
   isGameOver: false,
   isChooseDifficult: false,
   isDark: true,
@@ -33,7 +34,7 @@ export const gameLogic = {
   },
 };
 
-export const humanShips = createShipsObjects(gameLogic.shipSectionsParam);
+// export const humanShips = createShipsObjects(gameLogic.shipSectionsParam);
 export const computerShips = createShipsObjects(gameLogic.shipSectionsParam);
 
 export function start() {
@@ -48,7 +49,7 @@ export function start() {
     if (gameLogic.isChooseDifficult) render();
   };
 
-  render();
+  // render();
 
   createBattleField("computer");
 
@@ -59,7 +60,7 @@ export function start() {
 
   // showBusyField();
 
-  showShips(computerShips, "computer");
+  // showShips(computerShips, "computer");
 
   document.querySelector(".table-human").onclick = function (event) {
     if (gameLogic.isCreateHumanShips) return;

@@ -1,7 +1,7 @@
 import { getIdPosition } from "./modules/utils.js";
 import { computerShips } from "./controller.js";
-import { humanShips } from "./controller.js";
-// import { humanShips } from './src/humanShips.js';
+// import { humanShips } from "./controller.js";
+import { humanShips } from './humanShips.js';
 
 export function gameStart() {
   document.querySelector(".modal__button").style.display = "none";
