@@ -1,13 +1,3 @@
-import { humanShips } from "../humanShips.js";
-
-export function getAllShipsSections() {
-  const localShips = [];
-  humanShips.forEach((ship) => {
-    return ship.sections.forEach((section) => localShips.push(section));
-  });
-  return localShips;
-}
-
 export function getIdPosition(number) {
   let localArray;
   number < 10 ? (localArray = [0, number]) : (localArray = ("" + number).split("").map(Number));
