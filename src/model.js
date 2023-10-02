@@ -173,7 +173,6 @@ function fillcomputerBusyCells(props, computerBusyCells) {
       }
     }
   });
-  console.log(computerBusyCells, "ComputerBusyCells");
 }
 
 function checkEndCreateShips(props) {
