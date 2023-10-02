@@ -1,7 +1,6 @@
 import { getIdPosition, getNumberPosition } from "./modules/utils.js";
 import { computerShips } from "./controller.js";
-// import { humanShips } from "./controller.js";
-import { humanShips } from "./humanShips.js";
+import { humanShips } from "./controller.js";
 import { gameLogic } from "./controller.js";
 const dataComp = {
   computerBusyCells: new Set([]),
@@ -52,6 +51,7 @@ export function createShipsObjects(propsShips) {
 }
 
 //CREATE SHIPS FOR COMPUTER
+
 export function createShipsForComputer(numShip = 0) {
   const props = {
     numberByX: null,
@@ -359,10 +359,6 @@ function addBusyCellsOnSmartShot({ busyCellsSmartShot }) {
       }
     }
   });
-  // busyCellsSmartShot.forEach((cell)=>{
-  //   const computerShotId = `${getIdPosition(cell)}-human`
-  //   document.getElementById( `${computerShotId}` ).classList.add('auto-ship_busy')
-  // })
 }
 
 export function checkWhoWin(ships, player) {

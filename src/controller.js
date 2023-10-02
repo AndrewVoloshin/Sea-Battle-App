@@ -2,24 +2,23 @@ import { createBattleField, showShips } from "./view.js";
 import { createShipsForComputer, createHumanShips, checkShotOnValid, checkShotOnRepeat, createShipsObjects } from "./model.js";
 import { showBusyField, humanShootAtShip, computerShootAtShips, checkWhoWin, fireSecondShot, fireSecondShotComuter, chooseDifficult } from "./model.js";
 import { showComputerField, showHumanField, changeInfoFrame } from "./view.js";
-import { humanShips } from "./humanShips.js";
 import { gameStart, render } from "./view.js";
 localStorage.clear();
 
 export const gameLogic = {
   shipSectionsParam: [4, 3, 3, 2, 2, 2, 1, 1, 1, 1],
   isCreateHumanShips: false,
-  isCreateHumanShips: true,
   isGameOver: false,
   isChooseDifficult: false,
   isDark: true,
   difficult: {
     simple: false,
     normal: false,
-    heavy: true,
+    heavy: false,
   },
 };
 
+export const humanShips = createShipsObjects(gameLogic.shipSectionsParam);
 export const computerShips = createShipsObjects(gameLogic.shipSectionsParam);
 
 export function start() {
@@ -35,20 +34,14 @@ export function start() {
     if (gameLogic.isChooseDifficult) render();
   };
 
-  // render();
-
   createBattleField("computer");
   createBattleField("human");
   changeInfoFrame("Create ships please");
   createShipsForComputer();
 
-  // showBusyField();
-
-  // showShips(computerShips, "computer");
-
   document.querySelector(".table-human").onclick = function (event) {
     if (gameLogic.isCreateHumanShips) return;
-    // createHumanShips(event);
+    createHumanShips(event);
     showShips(humanShips, "human");
     changeInfoFrame(localStorage.getItem("humanMsg"));
     if (gameLogic.isCreateHumanShips) changeInfoFrame("Let's shoot on ships");
@@ -81,7 +74,7 @@ export function start() {
       if (fireSecondShotComuter()) setTimeout(computerShoot, 1000);
     } catch {
       gameLogic.isGameOver = true;
-      changeInfoFrame("Computer win!");
+      changeInfoFrame("Incorrectly placed the ships. Computer win!");
     }
   }
 }
