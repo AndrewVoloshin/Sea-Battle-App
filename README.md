@@ -6,6 +6,7 @@
 ![Static Badge](https://img.shields.io/badge/open%20source-%238b36db)
 
 _Sea battle is a classic game in which players compete to sink each other's ships on the playing field._
+
 ![Show Game](./src/assets/gameLight.gif)
 
 
@@ -22,6 +23,7 @@ _Sea battle is a classic game in which players compete to sink each other's ship
 
 ## Launching
 - Install a local web server  : [download link ](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
+- Launch with Live Server
 ## Screenshots
 ![Show Game](./src/assets/gameLightCreate.gif)
 
