@@ -14,6 +14,7 @@ _Sea battle is a classic game in which players compete to sink each other's ship
 
 
 ## Features:
+- Use architectural pattern Model-View-Controller
 - Player versus computer play
 - Different types of ships (single deck, double deck, etc.)
 - Interactive game board
