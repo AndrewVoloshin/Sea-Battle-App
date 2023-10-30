@@ -23,9 +23,19 @@ _Sea battle is a classic game in which players compete to sink each other's ship
   
 
 ## Launching
-- Install a local web server  : [download link ](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
-- Launch with Live Server
-## Screenshots
+
+### Option 1: Open in a browser
+
+1. Clone the repository to your local computer.
+2. Open the `index.html` file in your web browser.
+
+### Option 2: Using a local web server
+
+1. Clone the repository to your local computer.
+2. Install a local web server, such as [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).
+3. Run the project using the selected local web server.
+   
+## Demonstration
 ![Show Game](./src/assets/gameLightCreate.gif)
 
 ![Show Game](./src/assets/gameLightDark.gif)
