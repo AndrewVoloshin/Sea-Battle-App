@@ -10,7 +10,7 @@ _Sea battle is a classic game in which players compete to sink each other's ship
 ![Show Game](./src/assets/gameLight.gif)
 
 
-# [View Demo](https://andrewvoloshin.github.io/Sea-battle/) 
+# [View Demo](https://andrewvoloshin.github.io/Sea-Battle-App/) 
 
 
 ## Features:
